@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>NumberGuessing</title>
+</head>
+<body>
+
+<h1>Number Guessing Game</h1>
+<p>Remaining chances：<span id="remainingTurns">10</span></p>
+<label for="guessNumber">Please enter your number：</label>
+<input type="number" id="guessNumber" min="1" max="100" placeholder="Please enter your number">
+<button id="myBtn">submit</button>
+<p>Guessed numbers：<span id="guessedHistory">none</span></p>
+<div id="output"></div>
+<button id="myBtn2" style="display: none;">reset</button>
+
+<script src="randominteger.js"></script>
+<script>
+    let targetNumber;
+    let remainingChance;
+    let guessedNumbers;
+    function init(){
+        targetNumber=randomInt();
+        remainingChance=10;
+        guessedNumbers=[];
+        document.getElementById("guessedHistory").textContent="none";
+        document.getElementById("remainingTurns").textContent=10;
+        document.getElementById("output").textContent="";
+        myBtn.disabled = false;
+        myBtn2.style.display = 'none';
+    }
+    init();
+    const btn = document.querySelector("#myBtn");
+    const btn2 = document.querySelector("#myBtn2");
+    btn.addEventListener('click', () => {
+
+        const guessNumber=parseInt(document.getElementById("guessNumber").value);
+        if(isNaN(guessNumber) || guessNumber < 1 || guessNumber > 100){
+            document.getElementById("output").textContent="Enter the number from 1 to 100!";
+            return;
+        }
+        else if(guessedNumbers.includes(guessNumber)){
+            document.getElementById("output").textContent="Duplicate number, please re-enter.";
+            return;
+        }
+
+        guessedNumbers.push(guessNumber);
+        document.getElementById("guessedHistory").textContent=guessedNumbers;
+
+        if(guessNumber==targetNumber){
+            document.getElementById("output").textContent="Success.";
+            endGame();
+        }
+        else if(guessNumber>targetNumber){
+            document.getElementById("output").textContent="Too high.";
+        }
+        else{
+            document.getElementById("output").textContent="Too low.";
+        }
+
+        remainingChance--;
+        document.getElementById("remainingTurns").textContent=remainingChance;
+        if(remainingChance==0){
+            document.getElementById("output").textContent="Fail.";
+            endGame();
+        }
+    });
+
+    function endGame() {    //javascript中函数声明会提升到当前作用域的最顶部
+        btn.disabled = true; // 禁用提交按钮，防止继续猜测
+        btn2.style.display = 'inline-block'; // 显示重新开始按钮
+    }
+
+    btn2.addEventListener('click', init);
+
+</script>
+
+</body>
+</html>
